@@ -1,7 +1,8 @@
-[package]
-name = "echor"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+members = ["crates/*"]
+resolver = "3"
 
-[dependencies]
-clap = "4.6.6"
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+authors = ["peter.cappetto@gmail.com"]
