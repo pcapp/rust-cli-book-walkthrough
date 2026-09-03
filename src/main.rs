@@ -1,3 +1,5 @@
 fn main() {
-    println!("{:?}", std::env::args());
+    for (index, arg) in std::env::args().enumerate() {
+        println!("[{index}] {arg}")
+    }
 }
