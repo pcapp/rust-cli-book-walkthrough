@@ -1,41 +1,40 @@
-use clap::{Arg, Command};
+use std::fs::File;
+use std::io;
+use std::io::{BufRead, BufReader, Read};
+use clap::{Arg, Command, Parser};
+use anyhow::Result;
 
+#[derive(Parser, Debug)]
 struct Args {
-    files: Vec<String>,
-    lines: u64,
-    bytes: Option<u64>
+    file: Option<String>
 }
 
-fn get_args() -> Args {
-    let matches = Command::new("header")
-        .author("peter.cappetto@gmail.com")
-        .about("display the first lines of a file")
-        .arg(
-            Arg::new("file")
-                .value_name("file")
-                .default_value("-")
-        )
-        .arg(
-            Arg::new("bytes")
-                .value_name("bytes")
-                .short('c')
-                .long("bytes")
-        )
-        .arg(
-            Arg::new("count")
-                .value_name("count")
-                .short('n')
-                .long("lines")
-         ).get_matches();
-
-
-
-    Args {
-        files: vec![],
-        lines: 0,
-        bytes: None
+fn open(filename: &Option<String>) -> Result<Box<dyn BufRead>> {
+    match filename {
+        None => {
+            println!("Using stdin");
+            Ok(Box::new(BufReader::new(io::stdin())))
+        },
+        Some(filename) => {
+            let file = File::open(filename)?;
+            let reader = BufReader::new(file);
+            Ok(Box::new(reader))
+        }
     }
 }
+
 fn main() {
-    let _args = get_args();
+    let args = Args::parse();
+    let mut reader = match open(&args.file) {
+        Ok(reader) => reader,
+        Err(err) => {
+            eprintln!("Unable to open {}: {err}", args.file.expect("filename"));
+            std::process::exit(1);
+        }
+    };
+    let mut contents = String::new();
+
+    reader.read_to_string(&mut contents).expect("should read the file");
+
+    println!("{contents}")
 }
