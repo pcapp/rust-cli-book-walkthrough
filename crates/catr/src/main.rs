@@ -57,8 +57,14 @@ fn run(args: Args) -> Result<()> {
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
 
-        for line in contents.lines() {
-            println!("{line}");
+        for (index, line) in contents.lines().enumerate() {
+            let prefix = if args.number_lines {
+                format!("{:>6}\t", index + 1)
+            } else {
+                String::new()
+            };
+
+            println!("{prefix}{line}");
         }
     }
 
