@@ -10,3 +10,5 @@ clap.workspace = true
 anyhow.workspace = true
 assert_cmd.workspace = true
 predicates.workspace = true
+pretty_assertions.workspace = true
+rand.workspace = true

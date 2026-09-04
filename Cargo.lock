@@ -222,6 +222,8 @@ dependencies = [
  "assert_cmd",
  "clap",
  "predicates",
+ "pretty_assertions",
+ "rand",
 ]
 
 [[package]]
