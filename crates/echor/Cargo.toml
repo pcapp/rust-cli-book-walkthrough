@@ -5,8 +5,8 @@ edition.workspace = true
 authors.workspace = true
 
 [dependencies]
-anyhow = "1.0.104"
-assert_cmd = "2.2.2"
-clap = "4.6.6"
-predicates = "3.1.4"
-pretty_assertions = "1.4.1"
+anyhow.workspace = true
+assert_cmd.workspace = true
+clap.workspace = true
+predicates.workspace = true
+pretty_assertions.workspace = true
