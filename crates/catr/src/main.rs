@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read};
 use clap::{Arg, ArgAction, Command};
 use anyhow::{Result};
 
@@ -53,11 +53,15 @@ fn open(filename: &str) -> Result<Box<dyn BufRead>> {
 
 fn run(args: Args) -> Result<()> {
     for filename in args.files {
-        match open(&filename) {
-            Err(err) => eprintln!("Failed to open {filename}: {err}"),
-            Ok(_) => println!("Opened {filename}")
+        let mut file = open(&filename)?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)?;
+
+        for line in contents.lines() {
+            println!("{line}");
         }
     }
+
     Ok(())
 }
 
