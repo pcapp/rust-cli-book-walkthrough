@@ -1,0 +1,8 @@
+[package]
+name = "catr"
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+
+[dependencies]
+clap = "4.6.6"
