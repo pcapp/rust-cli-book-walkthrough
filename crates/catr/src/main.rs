@@ -8,7 +8,7 @@ use anyhow::{Result};
 struct Args {
     files: Vec<String>,
     number_lines: bool,
-    number_nonblank: bool
+    number_nonblank_lines: bool
 }
 
 fn get_args() -> Args {
@@ -26,21 +26,23 @@ fn get_args() -> Args {
         .arg(
             Arg::new("number_lines")
                 .short('n')
+                .long("number")
                 .action(ArgAction::SetTrue)
                 .help("Number lines")
         )
         .arg(
-        Arg::new("number_nonblank")
-            .short('b')
-            .action(ArgAction::SetTrue)
-            .help("Number non-blank lines")
-    )
+            Arg::new("number_nonblank_lines")
+                .short('b')
+                .long("number-nonblank")
+                .action(ArgAction::SetTrue)
+                .help("Number non-blank lines")
+        )
         .get_matches();
 
     Args {
         files: matches.get_many("files").unwrap().cloned().collect(),
         number_lines: matches.get_flag("number_lines"),
-        number_nonblank: false
+        number_nonblank_lines: matches.get_flag("number_nonblank_lines"),
     }
 }
 
@@ -53,14 +55,33 @@ fn open(filename: &str) -> Result<Box<dyn BufRead>> {
 
 fn run(args: Args) -> Result<()> {
     for filename in args.files {
-        let mut file = open(&filename)?;
+        let mut file = match open(&filename) {
+            Ok(file) => file,
+            Err(err) => {
+                eprintln!("Unable to open {filename}: {err}");
+                continue
+            }
+        };
+
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
+
+        let mut num_nonblank = 0;
 
         for (index, line) in contents.lines().enumerate() {
             let prefix = if args.number_lines {
                 format!("{:>6}\t", index + 1)
-            } else {
+            }
+            else if args.number_nonblank_lines {
+                if line.is_empty() {
+                    String::new()
+                }
+                else {
+                    num_nonblank += 1;
+                    format!("{:>6}\t", num_nonblank)
+                }
+            }
+            else {
                 String::new()
             };
 
