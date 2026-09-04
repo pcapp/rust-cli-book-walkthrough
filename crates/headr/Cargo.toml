@@ -1,0 +1,12 @@
+[package]
+name = "headr"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap.workspace = true
+
+[dev-dependencies]
+anyhow.workspace = true
+assert_cmd.workspace = true
+predicates.workspace = true
