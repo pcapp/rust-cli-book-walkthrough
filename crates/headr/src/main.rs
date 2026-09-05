@@ -6,7 +6,9 @@ use anyhow::Result;
 
 #[derive(Parser, Debug)]
 struct Args {
-    file: Option<String>
+    file: Option<String>,
+    #[arg(short = 'n', long, default_value_t = 10)]
+    count: usize
 }
 
 fn open(filename: &Option<String>) -> Result<Box<dyn BufRead>> {
@@ -36,5 +38,7 @@ fn main() {
 
     reader.read_to_string(&mut contents).expect("should read the file");
 
-    println!("{contents}")
+    for line in contents.lines().take(args.count) {
+        println!("{line}")
+    }
 }
